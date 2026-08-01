@@ -10,7 +10,7 @@
     ],
     "license": "ISC",
     "author": "Joshua Mellon",
-    "type": "commonjs",
+    "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "files": [
@@ -26,6 +26,11 @@
         "prepublishOnly": "npm run build"
     },
     "devDependencies": {
+        "@types/node": "^26.1.2",
+        "@types/smtp-server": "^3.5.13",
         "typescript": "^7.0.2"
+    },
+    "dependencies": {
+        "smtp-server": "^3.19.2"
     }
 }
