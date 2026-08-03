@@ -13,6 +13,13 @@
     "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "sideEffects": false,
     "files": [
         "dist"
     ],
@@ -20,22 +27,22 @@
         "node": ">=18"
     },
     "private": false,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/JoshuaMellon/smtp-for-testing.git"
+    },
+    "bugs": {
+        "url": "https://github.com/JoshuaMellon/smtp-for-testing/issues"
+    },
+    "homepage": "https://github.com/JoshuaMellon/smtp-for-testing#readme",
     "scripts": {
+        "clean": "rimraf dist",
         "build": "tsc -p tsconfig.json",
-        "start": "node dist/index.js",
+        "typecheck": "tsc --noEmit",
         "test": "vitest",
-        "prepublishOnly": "npm run build"
-    },
-    "devDependencies": {
-        "@types/mailparser": "^3.4.6",
-        "@types/node": "^26.1.2",
-        "@types/smtp-server": "^3.5.13",
-        "typescript": "^7.0.2",
-        "vitest": "^4.1.10"
-    },
-    "dependencies": {
-        "mailparser": "^3.9.14",
-        "nodemailer": "^9.0.3",
-        "smtp-server": "^3.19.2"
+        "test:run": "vitest run",
+        "test:coverage": "vitest run --coverage",
+        "start": "node dist/index.js",
+        "prepublishOnly": "npm run build && npm run test:run"
     }
 }
