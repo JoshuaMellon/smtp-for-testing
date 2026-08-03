@@ -23,17 +23,19 @@
     "scripts": {
         "build": "tsc -p tsconfig.json",
         "start": "node dist/index.js",
-        "test": "node --test",
+        "test": "vitest",
         "prepublishOnly": "npm run build"
     },
     "devDependencies": {
         "@types/mailparser": "^3.4.6",
         "@types/node": "^26.1.2",
         "@types/smtp-server": "^3.5.13",
-        "typescript": "^7.0.2"
+        "typescript": "^7.0.2",
+        "vitest": "^4.1.10"
     },
     "dependencies": {
         "mailparser": "^3.9.14",
+        "nodemailer": "^9.0.3",
         "smtp-server": "^3.19.2"
     }
 }

@@ -51,7 +51,7 @@ export class MailServer {
         return mailboxes.get(address) ?? [];
     }
 
-    async waitFormail(address: string, timeout = 10000): Promise<ParsedMail> {
+    async waitForMail(address: string, timeout = 10000): Promise<ParsedMail> {
         const start = Date.now();
 
         while (Date.now() - start < timeout) {
@@ -67,8 +67,8 @@ export class MailServer {
         throw new Error("Timed out waiting for email");
     }
 
-    async waitForVerificationEmail(email: string): Promise<ParsedMail> {
-        const mail = await this.waitFormail(email);
+    async waitForVerificationEmail(email: string, timeout = 10000): Promise<ParsedMail> {
+        const mail = await this.waitForMail(email, timeout);
 
         if (!mail.subject?.includes("Verify")) {
             throw new Error("Wrong email received");
