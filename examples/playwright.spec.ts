@@ -1,4 +1,4 @@
-import { createMailTest } from "../src/integrations/playwright/index.ts";
+import { createMailTest } from "smtp-for-testing/playwright";
 
 const { test, expect } = createMailTest();
 
