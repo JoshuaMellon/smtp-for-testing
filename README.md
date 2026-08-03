@@ -6,7 +6,8 @@ It captures incoming email in memory and gives you simple helpers to:
   - read a mailbox by recipient
   - clear mail state between tests
   - assert verification email flows
-  - Why this exists
+
+Why this exists
   - End-to-end tests often need real email behavior without external providers.
   - smtp-for-testing runs locally, accepts incoming mail, parses it, and stores it per recipient so your tests can assert real delivery behaviour.
 
