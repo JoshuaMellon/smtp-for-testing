@@ -17,6 +17,10 @@
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js"
+        },
+        "./playwright": {
+            "types": "./dist/playwright.d.ts",
+            "import": "./dist/playwright.js"
         }
     },
     "sideEffects": false,
@@ -44,5 +48,11 @@
         "test:coverage": "vitest run --coverage",
         "start": "node dist/index.js",
         "prepublishOnly": "npm run build && npm run test:run"
+    },
+    "dependencies": {
+        "playwright": "^1.62.1"
+    },
+    "devDependencies": {
+        "@types/node": "^26.1.2"
     }
 }
