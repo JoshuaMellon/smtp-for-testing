@@ -12,18 +12,10 @@ Why this exists
   - smtp-for-testing runs locally, accepts incoming mail, parses it, and stores it per recipient so your tests can assert real delivery behaviour.
 
 Tech stack and relevant libraries
-Runtime dependencies:
 
 smtp-server: receives SMTP messages locally
 mailparser: parses raw message streams into structured mail objects
 nodemailer: useful for sending test messages into the local SMTP server
-Development dependencies:
-
-typescript
-vitest
-@types/node
-@types/smtp-server
-@types/mailparser
 
 Install
 ```npm install smtp-for-testing```
