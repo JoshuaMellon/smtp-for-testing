@@ -1,10 +1,13 @@
 import { SMTPServer } from "smtp-server";
 import { simpleParser, type ParsedMail } from "mailparser";
+import { MailAwaiter } from "./mail-awaiter.js";
 
 const mailboxes = new Map<string, ParsedMail[]>();
 
 export class MailServer {
     server: SMTPServer;
+
+    awaiter: MailAwaiter;
 
     constructor(private port = 2525) {
         this.server = new SMTPServer({
@@ -28,52 +31,36 @@ export class MailServer {
                     .catch(callback);
             },
         });
+
+        this.awaiter = new MailAwaiter(this.getMailbox.bind(this));
     }
 
-    async start(): Promise<void> {
+    public async start(): Promise<void> {
         return new Promise<void>((resolve) => {
             console.log(`Server started on port: ${this.port}`);
             this.server.listen(this.port, resolve);
         });
     }
-    async stop(): Promise<void> {
+    public async stop(): Promise<void> {
         return new Promise<void>((resolve) => {
             console.log(`Server closed on port: ${this.port}`);
             this.server.close(() => resolve());
         });
     }
 
-    clear(): void {
+    public clear(): void {
         mailboxes.clear();
     }
 
-    getMailbox(address: string): ParsedMail[] {
+    public getMailbox(address: string): ParsedMail[] {
         return mailboxes.get(address) ?? [];
     }
 
-    async waitForMail(address: string, timeout = 10000): Promise<ParsedMail> {
-        const start = Date.now();
-
-        while (Date.now() - start < timeout) {
-            const mailbox = this.getMailbox(address);
-
-            if (mailbox[0]) {
-                return mailbox[0];
-            }
-
-            await new Promise((r) => setTimeout(r, 250));
-        }
-
-        throw new Error("Timed out waiting for email");
+    public waitForMail(address: string, timeout = 10000) {
+        return this.awaiter.waitForMail(address, timeout);
     }
 
-    async waitForVerificationEmail(email: string, timeout = 10000): Promise<ParsedMail> {
-        const mail = await this.waitForMail(email, timeout);
-
-        if (!mail.subject?.includes("Verify")) {
-            throw new Error("Wrong email received");
-        }
-
-        return mail;
+    public waitForVerificationEmail(address: string, timeout = 10000) {
+        return this.awaiter.waitForVerificationEmail(address, timeout);
     }
 }

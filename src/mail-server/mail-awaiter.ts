@@ -1,0 +1,34 @@
+import { SMTPServer } from "smtp-server";
+import { simpleParser, type ParsedMail } from "mailparser";
+
+type GetMailbox = (address: string) => ParsedMail[];
+
+export class MailAwaiter {
+    constructor(private readonly getMailbox: GetMailbox) {}
+
+    async waitForMail(address: string, timeout = 10000): Promise<ParsedMail> {
+        const start = Date.now();
+
+        while (Date.now() - start < timeout) {
+            const mailbox = this.getMailbox(address);
+
+            if (mailbox[0]) {
+                return mailbox[0];
+            }
+
+            await new Promise((r) => setTimeout(r, 250));
+        }
+
+        throw new Error("Timed out waiting for email");
+    }
+
+    async waitForVerificationEmail(address: string, timeout = 10000): Promise<ParsedMail> {
+        const mail = await this.waitForMail(address, timeout);
+
+        if (!mail.subject?.includes("Verify")) {
+            throw new Error("Wrong email received");
+        }
+
+        return mail;
+    }
+}
