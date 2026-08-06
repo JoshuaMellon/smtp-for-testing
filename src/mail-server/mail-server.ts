@@ -53,16 +53,20 @@ export class MailServer {
      * Resolves when the server has started listening.
      */
     public async start(): Promise<void> {
-        return new Promise<void>((resolve) => {
-            console.log(`Server started on port: ${this.port}`);
-
+        return new Promise<void>((resolve, reject) => {
             if (this.config.clearOnStart) {
                 this.clear();
             }
 
             this.seedMailboxes();
 
-            this.server.listen(this.port, this.config.host, resolve);
+            this.server.once("error", reject);
+
+            this.server.listen(this.port, this.config.host, () => {
+                this.server.removeListener("error", reject);
+                console.log(`Server started on port: ${this.port}`);
+                resolve();
+            });
         });
     }
 
