@@ -1,5 +1,4 @@
-import { SMTPServer } from "smtp-server";
-import { simpleParser, type ParsedMail } from "mailparser";
+import type { ParsedMail } from "mailparser";
 
 type GetMailbox = (address: string) => ParsedMail[];
 
