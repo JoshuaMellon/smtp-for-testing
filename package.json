@@ -1,6 +1,6 @@
 {
     "name": "smtp-for-testing",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "description": "SMTP server for creating and managing local mail inboxes for testing purposes, with Playwright support.",
     "keywords": [
         "playwright",
