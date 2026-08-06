@@ -59,6 +59,7 @@
         "@vitest/coverage-v8": "^4.1.10",
         "mailparser": "^3.9.14",
         "smtp-server": "^3.19.2",
+        "typescript": "^7.0.2",
         "vitest": "^4.1.10"
     }
 }
