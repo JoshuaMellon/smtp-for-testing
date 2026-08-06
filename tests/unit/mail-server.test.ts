@@ -29,3 +29,12 @@ test("clear wipes mail state", () => {
     mailServer.clear();
     expect(mailServer.getMailbox("test")).toStrictEqual([]);
 });
+
+test("constructor accepts config object without explicit port", () => {
+    const configuredServer = new MailServer({
+        defaultTimeout: 500,
+        seedRecipients: ["unit@example.com"],
+    });
+
+    expect(configuredServer.getMailbox("unit@example.com")).toEqual([]);
+});
