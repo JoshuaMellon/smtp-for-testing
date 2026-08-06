@@ -8,14 +8,17 @@ const URL_REGEX = /https?:\/\/[^\s"'<>]+/gi;
  * Retries a fixed number of times to support asynchronous mail delivery.
  * Returns unique URLs only.
  *
- * @param mailList Parsed messages to search.
+ * @param getMailList Function returning the current parsed messages to search.
  * @param subject Case-insensitive subject fragment to match.
  * @param retries Number of polling attempts before failing - default: 6.
  * @param delayMs Delay in milliseconds between attempts - default: 5000.
  */
-export async function fetchUrls(mailList: ParsedMail[], subject: string, retries = 6, delayMs = 5000): Promise<string[]> {
+export async function fetchUrls(getMailList: () => ParsedMail[], subject: string, retries = 6, delayMs = 5000): Promise<string[]> {
+    const subjectLower = subject.toLowerCase();
+
     for (let i = 0; i < retries; i++) {
-        const targetMail = mailList.find((mail) => mail.subject?.toLocaleLowerCase().includes(subject.toLowerCase()));
+        const mailList = getMailList();
+        const targetMail = mailList.find((mail) => mail.subject?.toLowerCase().includes(subjectLower));
 
         if (!targetMail) {
             await new Promise((resolve) => setTimeout(resolve, delayMs));
