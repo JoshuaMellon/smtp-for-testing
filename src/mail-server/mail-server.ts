@@ -45,6 +45,13 @@ export class MailServer {
         this.awaiter = new MailAwaiter(this.getMailbox.bind(this));
     }
 
+    /**
+     * Starts the SMTP server and prepares mailbox state.
+     *
+     * If enabled, existing mailbox state is cleared first and configured
+     * recipient mailboxes are seeded before the server begins listening.
+     * Resolves when the server has started listening.
+     */
     public async start(): Promise<void> {
         return new Promise<void>((resolve) => {
             console.log(`Server started on port: ${this.port}`);
@@ -58,6 +65,13 @@ export class MailServer {
             this.server.listen(this.port, this.config.host, resolve);
         });
     }
+
+    /**
+     * Stops the SMTP server.
+     *
+     * If enabled, mailbox state is cleared before the server is closed.
+     * Resolves when the server has fully closed.
+     */
     public async stop(): Promise<void> {
         return new Promise<void>((resolve) => {
             console.log(`Server closed on port: ${this.port}`);
@@ -70,22 +84,43 @@ export class MailServer {
         });
     }
 
+    /** Clears all in-memory mailbox state for this server instance. */
     public clear(): void {
         this.mailboxes.clear();
     }
 
+    /**
+     * Returns all parsed messages currently stored for a recipient address.
+     *
+     * @param address Recipient email address.
+     */
     public getMailbox(address: string): ParsedMail[] {
         return this.mailboxes.get(address) ?? [];
     }
 
-    public waitForMail(address: string, timeout = this.timeout) {
+    /**
+     * Waits until at least one message is available for the provided address.
+     * Uses the configured default timeout when no timeout is passed.
+     *
+     * @param address Recipient email address.
+     * @param timeout Max wait time in milliseconds.
+     */
+    public waitForMail(address: string, timeout = this.timeout): Promise<ParsedMail> {
         return this.awaiter.waitForMail(address, timeout);
     }
 
-    public waitForVerificationEmail(address: string, timeout = this.timeout) {
+    /**
+     * Waits for a recipient message whose subject contains "Verify".
+     * Uses the configured default timeout when no timeout is passed.
+     *
+     * @param address Recipient email address.
+     * @param timeout Max wait time in milliseconds.
+     */
+    public waitForVerificationEmail(address: string, timeout = this.timeout): Promise<ParsedMail> {
         return this.awaiter.waitForVerificationEmail(address, timeout);
     }
 
+    /** Seeds configured recipient addresses so mailbox entries exist before mail arrives. */
     private seedMailboxes(): void {
         const recipients = this.config.seedRecipients ?? [];
         const domainUsers = this.config.recipientDomain && this.config.seedUsers ? this.config.seedUsers.map((u) => `${u}@${this.config.recipientDomain}`) : [];

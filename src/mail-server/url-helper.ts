@@ -2,6 +2,17 @@ import type { ParsedMail } from "mailparser";
 
 const URL_REGEX = /https?:\/\/[^\s"'<>]+/gi;
 
+/**
+ * Finds URLs in the first message whose subject contains the provided text.
+ *
+ * Retries a fixed number of times to support asynchronous mail delivery.
+ * Returns unique URLs only.
+ *
+ * @param mailList Parsed messages to search.
+ * @param subject Case-insensitive subject fragment to match.
+ * @param retries Number of polling attempts before failing - default: 6.
+ * @param delayMs Delay in milliseconds between attempts - default: 5000.
+ */
 export async function fetchUrls(mailList: ParsedMail[], subject: string, retries = 6, delayMs = 5000): Promise<string[]> {
     for (let i = 0; i < retries; i++) {
         const targetMail = mailList.find((mail) => mail.subject?.toLocaleLowerCase().includes(subject.toLowerCase()));
@@ -23,6 +34,12 @@ export async function fetchUrls(mailList: ParsedMail[], subject: string, retries
     throw new Error(`No mail found with subject containing "${subject}" and URL body content.`);
 }
 
+/**
+ * Returns the longest URL from a list.
+ *
+ * @param urls URL candidates.
+ * @returns The longest URL, or undefined when the list is empty.
+ */
 export function findLongestUrl(urls: string[]): string | undefined {
     return urls.reduce<string | undefined>((longest, current) => (!longest || current.length > longest.length ? current : longest), undefined);
 }
