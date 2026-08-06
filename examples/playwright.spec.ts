@@ -1,6 +1,12 @@
 import { createMailTest } from "smtp-for-testing/playwright";
 
-const { test, expect } = createMailTest();
+const { test, expect } = createMailTest({
+    port: 2525,
+    defaultTimeout: 3000,
+    seedRecipients: ["user@example.com"],
+    recipientDomain: "example.com",
+    seedUsers: ["user"],
+});
 
 test("captures a verification email", async ({ page, mailServer }) => {
     await page.goto("http://localhost:3000/signup");
