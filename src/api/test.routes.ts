@@ -1,5 +1,10 @@
 import { Router, type Request, type Response } from "express";
 
+/**
+ * Creates and configures test routes for the API.
+ * @param {number} port - The port number on which the API is running
+ * @returns {Router} An Express router with test endpoints configured
+ */
 export function createTestRoutes(port: number): Router {
     const router = Router();
 

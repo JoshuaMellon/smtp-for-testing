@@ -1,6 +1,11 @@
 import { Router, type Request, type Response } from "express";
 import type { MailServer } from "../mail-server/mail-server.js";
 
+/**
+ * Creates and configures the Express router for mail-related endpoints.
+ * @param mailServer - The mail server instance used to handle mailbox operations
+ * @returns {Router} An Express Router configured with mail API routes
+ */
 export function createMailRoutes(mailServer: MailServer): Router {
     const router = Router();
 

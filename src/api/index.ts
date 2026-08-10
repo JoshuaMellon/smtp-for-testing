@@ -9,6 +9,11 @@ import { createTestRoutes } from "./test.routes.js";
 
 const app: Express = express();
 
+/**
+ * Starts the mail server with the given configuration
+ * @param {MailServerConfig | number} [config=3000] - Either a port number or a full MailServerConfig object
+ * @returns {Promise<void>}
+ */
 export async function startServer(config: MailServerConfig | number = 3000): Promise<void> {
     // Resolve the configuration, allowing for either a port number or a full configuration object
     const resolvedConfig: MailServerConfig = typeof config === "number" ? { port: config } : config;
