@@ -50,6 +50,8 @@
         "prepublishOnly": "npm run build && npm run test:run"
     },
     "dependencies": {
+        "@asteasolutions/zod-to-openapi": "^9.1.0",
+        "@scalar/express-api-reference": "^0.10.13",
         "express": "^5.2.1",
         "mailparser": "^3.9.14",
         "playwright": "^1.62.1",
