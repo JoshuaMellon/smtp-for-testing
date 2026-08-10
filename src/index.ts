@@ -4,7 +4,9 @@ import type { MailServerConfig } from "./types/mail-server.js";
 
 export { MailServer };
 
-export async function createMailServer(configOrPort: MailServerConfig | number = 2525): Promise<MailServer> {
+export async function createMailServer(
+    configOrPort: MailServerConfig | number = 2525,
+): Promise<MailServer> {
     const mailServer = new MailServer(configOrPort);
 
     await mailServer.start();
@@ -12,6 +14,8 @@ export async function createMailServer(configOrPort: MailServerConfig | number =
     return mailServer;
 }
 
-export async function createMailServerApi(configOrPort: MailServerConfig | number = 2525): Promise<void> {
+export async function createMailServerApi(
+    configOrPort: MailServerConfig | number = 2525,
+): Promise<void> {
     await startServer(configOrPort);
 }

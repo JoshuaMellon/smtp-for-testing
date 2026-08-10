@@ -21,7 +21,10 @@ export class MailAwaiter {
         throw new Error("Timed out waiting for email");
     }
 
-    async waitForVerificationEmail(address: string, timeout = 10000): Promise<ParsedMail> {
+    async waitForVerificationEmail(
+        address: string,
+        timeout = 10000,
+    ): Promise<ParsedMail> {
         const mail = await this.waitForMail(address, timeout);
 
         if (!mail.subject?.includes("Verify")) {

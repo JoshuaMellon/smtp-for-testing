@@ -15,7 +15,10 @@ export class MailServer {
     public awaiter: MailAwaiter;
 
     constructor(configOrPort: MailServerConfig | number = 2525) {
-        this.config = typeof configOrPort === "number" ? { port: configOrPort } : configOrPort;
+        this.config =
+            typeof configOrPort === "number"
+                ? { port: configOrPort }
+                : configOrPort;
 
         this.port = this.config.port ?? 2525;
         this.timeout = this.config.defaultTimeout ?? 10000;
@@ -28,7 +31,9 @@ export class MailServer {
             onData: (stream, session, callback) => {
                 simpleParser(stream)
                     .then((mail) => {
-                        const recipients = session.envelope.rcptTo.map((r) => r.address);
+                        const recipients = session.envelope.rcptTo.map(
+                            (r) => r.address,
+                        );
 
                         for (const address of recipients) {
                             const existing = this.mailboxes.get(address) ?? [];
@@ -109,7 +114,10 @@ export class MailServer {
      * @param address Recipient email address.
      * @param timeout Max wait time in milliseconds.
      */
-    public waitForMail(address: string, timeout = this.timeout): Promise<ParsedMail> {
+    public waitForMail(
+        address: string,
+        timeout = this.timeout,
+    ): Promise<ParsedMail> {
         return this.awaiter.waitForMail(address, timeout);
     }
 
@@ -120,14 +128,22 @@ export class MailServer {
      * @param address Recipient email address.
      * @param timeout Max wait time in milliseconds.
      */
-    public waitForVerificationEmail(address: string, timeout = this.timeout): Promise<ParsedMail> {
+    public waitForVerificationEmail(
+        address: string,
+        timeout = this.timeout,
+    ): Promise<ParsedMail> {
         return this.awaiter.waitForVerificationEmail(address, timeout);
     }
 
     /** Seeds configured recipient addresses so mailbox entries exist before mail arrives. */
     private seedMailboxes(): void {
         const recipients = this.config.seedRecipients ?? [];
-        const domainUsers = this.config.recipientDomain && this.config.seedUsers ? this.config.seedUsers.map((u) => `${u}@${this.config.recipientDomain}`) : [];
+        const domainUsers =
+            this.config.recipientDomain && this.config.seedUsers
+                ? this.config.seedUsers.map(
+                      (u) => `${u}@${this.config.recipientDomain}`,
+                  )
+                : [];
 
         const allMailboxes = [...recipients, ...domainUsers];
 

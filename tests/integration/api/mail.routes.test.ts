@@ -57,7 +57,9 @@ test("GET /mail/mailbox/:address/wait-verification returns 200 and mail when mat
 
     await sendTestMail(recipient, undefined, smtpPort);
 
-    const res = await request(app).get(`/mail/mailbox/${recipient}/wait-verification`);
+    const res = await request(app).get(
+        `/mail/mailbox/${recipient}/wait-verification`,
+    );
 
     expect(res.status).toBe(200);
     expect(res.body).toBeTypeOf("string");
@@ -65,7 +67,9 @@ test("GET /mail/mailbox/:address/wait-verification returns 200 and mail when mat
 });
 
 test("GET /mail/mailbox/:address/wait-verification returns 400 when no matching mail found", async () => {
-    const res = await request(app).get("/mail/mailbox/test@example.com/wait-verification");
+    const res = await request(app).get(
+        "/mail/mailbox/test@example.com/wait-verification",
+    );
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error", "Timed out waiting for email");

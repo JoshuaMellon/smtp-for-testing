@@ -7,7 +7,11 @@ const PORT = 2625;
 
 let mailServer: MailServer;
 
-async function sendMailToPort(port: number, address: string[] | string, mail?: SendMailOptions) {
+async function sendMailToPort(
+    port: number,
+    address: string[] | string,
+    mail?: SendMailOptions,
+) {
     const transport = createTransport({
         host: "127.0.0.1",
         port,
@@ -54,7 +58,10 @@ test("start seeds configured domain user addresses", () => {
 test("seeded recipients receive incoming mail", async () => {
     await sendMailToPort(PORT, "seeded@example.com");
 
-    const receivedMail = await mailServer.waitForMail("seeded@example.com", 3000);
+    const receivedMail = await mailServer.waitForMail(
+        "seeded@example.com",
+        3000,
+    );
 
     expect(receivedMail.subject).toBe("Verify your account");
     expect(mailServer.getMailbox("seeded@example.com")).toHaveLength(1);
@@ -69,7 +76,9 @@ test("waitForMail uses configured default timeout", async () => {
     await timeoutServer.start();
 
     const startedAt = Date.now();
-    await expect(timeoutServer.waitForMail("nobody@example.com")).rejects.toThrow("Timed out waiting for email");
+    await expect(
+        timeoutServer.waitForMail("nobody@example.com"),
+    ).rejects.toThrow("Timed out waiting for email");
     const elapsed = Date.now() - startedAt;
 
     await timeoutServer.stop();
@@ -92,7 +101,9 @@ test("clearOnStop removes received mail before next start", async () => {
     await clearOnStopServer.stop();
     await clearOnStopServer.start();
 
-    expect(clearOnStopServer.getMailbox("persist-check@example.com")).toEqual([]);
+    expect(clearOnStopServer.getMailbox("persist-check@example.com")).toEqual(
+        [],
+    );
 
     await clearOnStopServer.stop();
 });
@@ -111,7 +122,9 @@ test("clearOnStart resets mailbox state before reseeding", async () => {
     await clearOnStartServer.stop();
     await clearOnStartServer.start();
 
-    expect(clearOnStartServer.getMailbox("reset-check@example.com")).toEqual([]);
+    expect(clearOnStartServer.getMailbox("reset-check@example.com")).toEqual(
+        [],
+    );
 
     await clearOnStartServer.stop();
 });

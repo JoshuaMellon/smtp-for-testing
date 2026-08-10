@@ -1,6 +1,10 @@
 import { createTransport, type SendMailOptions } from "nodemailer";
 
-export async function sendTestMail(address: string[] | string, mail?: SendMailOptions, port = 2525) {
+export async function sendTestMail(
+    address: string[] | string,
+    mail?: SendMailOptions,
+    port = 2525,
+) {
     const transport = createTransport({
         host: "127.0.0.1",
         port,

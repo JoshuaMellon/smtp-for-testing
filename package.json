@@ -45,6 +45,8 @@
         "typecheck": "tsc --noEmit",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
+        "format": "prettier . --write",
+        "format:check": "prettier . --check",
         "test": "vitest",
         "test:run": "vitest run",
         "test:coverage": "vitest run --coverage",
