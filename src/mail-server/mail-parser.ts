@@ -1,4 +1,4 @@
-import { simpleParser, type ParsedMail } from "mailparser";
+import { type ParsedMail } from "mailparser";
 
 import type { Mail } from "../types/mail.js";
 
