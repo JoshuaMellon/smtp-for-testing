@@ -1,9 +1,13 @@
 import { test as base, expect } from "playwright/test";
+import { type Express } from "express";
+
 import { MailServer } from "../../mail-server/mail-server.js";
 import type { MailServerConfig } from "../../types/mail-server.js";
+import { createApiApp } from "../../api/index.js";
 
 export type MailFixtures = {
     mailServer: MailServer;
+    mailApi: Express;
 };
 
 /**
@@ -19,6 +23,17 @@ export function createMailTest(configOrPort: MailServerConfig | number = 2525) {
 
             try {
                 await use(mailServer);
+            } finally {
+                mailServer.clear();
+                await mailServer.stop();
+            }
+        },
+        mailApi: async (_args, use) => {
+            const { app, mailServer } = await createApiApp(configOrPort);
+            await mailServer.start();
+
+            try {
+                await use(app);
             } finally {
                 mailServer.clear();
                 await mailServer.stop();
