@@ -1,12 +1,17 @@
+import { startServer } from "./api/index.js";
 import { MailServer } from "./mail-server/mail-server.js";
 import type { MailServerConfig } from "./types/mail-server.js";
 
 export { MailServer };
 
-export function createMailServer(configOrPort: MailServerConfig | number = 2525): MailServer {
-    return new MailServer(configOrPort);
+export async function createMailServer(configOrPort: MailServerConfig | number = 2525): Promise<MailServer> {
+    const mailServer = new MailServer(configOrPort);
+
+    await mailServer.start();
+
+    return mailServer;
 }
 
-export function createMailServerApi(port = 2525) {
-    // replace later with express api
+export async function createMailServerApi(configOrPort: MailServerConfig | number = 2525): Promise<void> {
+    await startServer(configOrPort);
 }
