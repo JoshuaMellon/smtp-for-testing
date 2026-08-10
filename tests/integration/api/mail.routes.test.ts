@@ -41,8 +41,11 @@ test("GET /mail/mailbox/:address/wait returns 200 and mail when matching mail fo
     const res = await request(app).get(`/mail/mailbox/${recipient}/wait`);
 
     expect(res.status).toBe(200);
-    expect(res.body).toBeTypeOf("string");
-    expect(res.body).toContain("hello");
+    expect(res.body).toMatchObject({
+        from: "tester@example.com",
+        to: recipient,
+        text: expect.stringContaining("hello"),
+    });
 });
 
 test("GET /mail/mailbox/:address/wait returns 400 when no matching mail found", async () => {
@@ -62,8 +65,11 @@ test("GET /mail/mailbox/:address/wait-verification returns 200 and mail when mat
     );
 
     expect(res.status).toBe(200);
-    expect(res.body).toBeTypeOf("string");
-    expect(res.body).toContain("hello");
+    expect(res.body).toMatchObject({
+        from: "tester@example.com",
+        to: recipient,
+        text: expect.stringContaining("hello"),
+    });
 });
 
 test("GET /mail/mailbox/:address/wait-verification returns 400 when no matching mail found", async () => {

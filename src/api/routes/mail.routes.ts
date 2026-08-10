@@ -51,7 +51,7 @@ export function createMailRoutes(mailServer: MailServer): Router {
         async (req: Request<{ address: string }>, res: Response) => {
             try {
                 const mail = await mailServer.waitForMail(req.params.address);
-                res.status(200).json(mail.text);
+                res.status(200).json(mail);
             } catch (error) {
                 handleMailRouteError(error, res);
             }
@@ -65,7 +65,7 @@ export function createMailRoutes(mailServer: MailServer): Router {
                 const mail = await mailServer.waitForVerificationEmail(
                     req.params.address,
                 );
-                res.status(200).json(mail.text);
+                res.status(200).json(mail);
             } catch (error) {
                 handleMailRouteError(error, res);
             }

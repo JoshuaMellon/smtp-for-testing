@@ -1,11 +1,11 @@
-import type { ParsedMail } from "mailparser";
+import type { Mail } from "../types/mail.js";
 
-type GetMailbox = (address: string) => ParsedMail[];
+type GetMailbox = (address: string) => Mail[];
 
 export class MailAwaiter {
     constructor(private readonly getMailbox: GetMailbox) {}
 
-    async waitForMail(address: string, timeout = 10000): Promise<ParsedMail> {
+    async waitForMail(address: string, timeout = 10000): Promise<Mail> {
         const start = Date.now();
 
         while (Date.now() - start < timeout) {
@@ -24,7 +24,7 @@ export class MailAwaiter {
     async waitForVerificationEmail(
         address: string,
         timeout = 10000,
-    ): Promise<ParsedMail> {
+    ): Promise<Mail> {
         const mail = await this.waitForMail(address, timeout);
 
         if (!mail.subject?.includes("Verify")) {
