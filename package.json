@@ -43,6 +43,8 @@
         "clean": "rimraf dist",
         "build": "npm run clean && tsc -p tsconfig.build.json",
         "typecheck": "tsc --noEmit",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
         "test": "vitest",
         "test:run": "vitest run",
         "test:coverage": "vitest run --coverage",
