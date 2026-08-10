@@ -1,8 +1,10 @@
 import express, { type Express } from "express";
+import { apiReference } from "@scalar/express-api-reference";
 
 import type { MailServerConfig } from "../types/mail-server.js";
 
 import { MailServer } from "../index.js";
+import { openApiDocument } from "./lib/openapi.js";
 
 import { createMailRoutes } from "./routes/mail.routes.js";
 import { createTestRoutes } from "./routes/test.routes.js";
@@ -25,7 +27,18 @@ export async function startServer(config: MailServerConfig | number = 3000): Pro
 
     app.use("/mail", createMailRoutes(mailServer));
     app.use("/test", createTestRoutes(smtpPort));
-    ``;
+
+    const apiDocJsonContent = openApiDocument;
+
+    app.use(
+        "/docs", // documentation route
+        apiReference({
+            content: apiDocJsonContent,
+            title: "Users API",
+            pageTitle: "Users API",
+        }),
+    );
+
     console.log(`Starting mail server on port ${smtpPort}...`);
 
     try {
