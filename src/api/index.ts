@@ -21,18 +21,12 @@ export type ApiContext = {
 };
 
 /**
- * Creates and configures the API application with mail and test routes
- * @param {MailServerConfig | number} [config=2525] - Either a port number or a full MailServerConfig object
- * @returns {Promise<ApiContext>} Promise resolving to an object containing the Express app and mail server instances
+ * Creates an Express app wired to an existing mail server instance.
+ *
+ * @param mailServer - The mail server instance to expose through the API routes.
+ * @returns A configured Express app with mail and test endpoints.
  */
-export async function createApiApp(
-    config: MailServerConfig | number = 2525,
-): Promise<ApiContext> {
-    // Resolve the configuration, allowing for either a port number or a full configuration object
-    const resolvedConfig: MailServerConfig =
-        typeof config === "number" ? { port: config } : config;
-
-    const mailServer = new MailServer(resolvedConfig);
+export function createApiAppWithMailServer(mailServer: MailServer): Express {
     const app: Express = express();
 
     app.use(express.json());
@@ -48,6 +42,24 @@ export async function createApiApp(
             pageTitle: "Users API",
         }),
     );
+
+    return app;
+}
+
+/**
+ * Creates and configures the API application with mail and test routes
+ * @param {MailServerConfig | number} [config=2525] - Either a port number or a full MailServerConfig object
+ * @returns {Promise<ApiContext>} Promise resolving to an object containing the Express app and mail server instances
+ */
+export async function createApiApp(
+    config: MailServerConfig | number = 2525,
+): Promise<ApiContext> {
+    // Resolve the configuration, allowing for either a port number or a full configuration object
+    const resolvedConfig: MailServerConfig =
+        typeof config === "number" ? { port: config } : config;
+
+    const mailServer = new MailServer(resolvedConfig);
+    const app = createApiAppWithMailServer(mailServer);
 
     return { app, mailServer };
 }
