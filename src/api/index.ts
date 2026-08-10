@@ -3,7 +3,9 @@ import express, { type Express } from "express";
 import type { MailServerConfig } from "../types/mail-server.js";
 
 import { MailServer } from "../index.js";
+
 import { createMailRoutes } from "./mail.routes.js";
+import { createTestRoutes } from "./test.routes.js";
 
 const app: Express = express();
 
@@ -15,8 +17,10 @@ export async function startServer(config: MailServerConfig | number = 3000): Pro
     const mailServer = new MailServer(resolvedConfig);
 
     app.use(express.json());
-    app.use("/mail", createMailRoutes(mailServer));
 
+    app.use("/mail", createMailRoutes(mailServer));
+    app.use("/test", createTestRoutes(smtpPort));
+    ``;
     console.log(`Starting mail server on port ${smtpPort}...`);
 
     try {
