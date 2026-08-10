@@ -4,8 +4,8 @@ import type { MailServerConfig } from "../types/mail-server.js";
 
 import { MailServer } from "../index.js";
 
-import { createMailRoutes } from "./mail.routes.js";
-import { createTestRoutes } from "./test.routes.js";
+import { createMailRoutes } from "./routes/mail.routes.js";
+import { createTestRoutes } from "./routes/test.routes.js";
 
 const app: Express = express();
 

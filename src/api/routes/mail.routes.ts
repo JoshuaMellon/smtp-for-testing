@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import type { MailServer } from "../mail-server/mail-server.js";
+import type { MailServer } from "../../mail-server/mail-server.js";
 
 /**
  * Creates and configures the Express router for mail-related endpoints.
