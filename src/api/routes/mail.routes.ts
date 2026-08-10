@@ -9,10 +9,6 @@ import type { MailServer } from "../../mail-server/mail-server.js";
 export function createMailRoutes(mailServer: MailServer): Router {
     const router = Router();
 
-    router.get("/health", (req: Request, res: Response) => {
-        res.status(200).json({ status: "ok" });
-    });
-
     router.get("/mailbox/:address", (req: Request<{ address: string }>, res: Response) => {
         const mail = mailServer.getMailbox(req.params.address);
         res.status(200).json(mail);

@@ -9,7 +9,45 @@ import { openApiDocument } from "./lib/openapi.js";
 import { createMailRoutes } from "./routes/mail.routes.js";
 import { createTestRoutes } from "./routes/test.routes.js";
 
-const app: Express = express();
+/**
+ * Context object containing the Express app instance and mail server
+ * @typedef {Object} ApiContext
+ * @property {Express} app - The Express application instance
+ * @property {MailServer} mailServer - The mail server instance
+ */
+export type ApiContext = {
+    app: Express;
+    mailServer: MailServer;
+};
+
+/**
+ * Creates and configures the API application with mail and test routes
+ * @param {MailServerConfig | number} [config=2525] - Either a port number or a full MailServerConfig object
+ * @returns {Promise<ApiContext>} Promise resolving to an object containing the Express app and mail server instances
+ */
+export async function createApiApp(config: MailServerConfig | number = 2525): Promise<ApiContext> {
+    // Resolve the configuration, allowing for either a port number or a full configuration object
+    const resolvedConfig: MailServerConfig = typeof config === "number" ? { port: config } : config;
+
+    const mailServer = new MailServer(resolvedConfig);
+    const app: Express = express();
+
+    app.use(express.json());
+
+    app.use("/mail", createMailRoutes(mailServer));
+    app.use("/test", createTestRoutes());
+
+    app.use(
+        "/docs",
+        apiReference({
+            content: openApiDocument,
+            title: "Users API",
+            pageTitle: "Users API",
+        }),
+    );
+
+    return { app, mailServer };
+}
 
 /**
  * Starts the mail server with the given configuration
@@ -17,31 +55,8 @@ const app: Express = express();
  * @returns {Promise<void>}
  */
 export async function startServer(config: MailServerConfig | number = 2525): Promise<void> {
-    // Resolve the configuration, allowing for either a port number or a full configuration object
-    const resolvedConfig: MailServerConfig = typeof config === "number" ? { port: config } : config;
-
     const apiPort = Number(process.env.API_PORT ?? 3000);
-    const smtpPort = resolvedConfig.port ?? 2525;
-
-    const mailServer = new MailServer(resolvedConfig);
-
-    app.use(express.json());
-
-    app.use("/mail", createMailRoutes(mailServer));
-    app.use("/test", createTestRoutes(smtpPort));
-
-    const apiDocJsonContent = openApiDocument;
-
-    app.use(
-        "/docs", // documentation route
-        apiReference({
-            content: apiDocJsonContent,
-            title: "Users API",
-            pageTitle: "Users API",
-        }),
-    );
-
-    console.log(`Starting mail server on port ${smtpPort}...`);
+    const { app, mailServer } = await createApiApp(config);
 
     app.listen(apiPort, () => {
         console.log(`Mail server API is running at http://localhost:${apiPort}`);

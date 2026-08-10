@@ -5,12 +5,6 @@ extendZodWithOpenApi(z);
 
 const registry = new OpenAPIRegistry();
 
-const HealthResponseSchema = z
-    .object({
-        status: z.string().openapi({ example: "ok" }),
-    })
-    .openapi("HealthResponse");
-
 const TestResponseSchema = z.string().openapi({
     example: "Api running on port 3000",
 });
@@ -22,23 +16,6 @@ const MailSchema = z
         html: z.string().nullable().optional(),
     })
     .openapi("ParsedMail");
-
-registry.registerPath({
-    method: "get",
-    path: "/mail/health",
-    tags: ["mail"],
-    summary: "Mail route health check",
-    responses: {
-        200: {
-            description: "Mail routes are reachable",
-            content: {
-                "application/json": {
-                    schema: HealthResponseSchema,
-                },
-            },
-        },
-    },
-});
 
 registry.registerPath({
     method: "get",
