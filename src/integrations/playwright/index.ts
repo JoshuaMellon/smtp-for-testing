@@ -13,7 +13,7 @@ export type MailFixtures = {
  */
 export function createMailTest(configOrPort: MailServerConfig | number = 2525) {
     const test = base.extend<MailFixtures>({
-        mailServer: async ({}, use) => {
+        mailServer: async (_args, use) => {
             const mailServer = new MailServer(configOrPort);
             await mailServer.start();
 
