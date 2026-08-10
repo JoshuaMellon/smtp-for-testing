@@ -46,6 +46,7 @@
         "test": "vitest",
         "test:run": "vitest run",
         "test:coverage": "vitest run --coverage",
+        "api:start": "node --input-type=module -e \"import { createMailServerApi } from './dist/index.js'; await createMailServerApi({ port: 2525 });\"",
         "start": "node dist/index.js",
         "prepublishOnly": "npm run build && npm run test:run"
     },
