@@ -1,11 +1,13 @@
 import { SMTPServer } from "smtp-server";
-import { simpleParser, type ParsedMail } from "mailparser";
+import { simpleParser } from "mailparser";
 import { MailAwaiter } from "./mail-awaiter.js";
+import { parseMail } from "./mail-parser.js";
 
+import type { Mail } from "../types/mail.js";
 import type { MailServerConfig } from "../types/mail-server.js";
 
 export class MailServer {
-    private mailboxes = new Map<string, ParsedMail[]>();
+    private mailboxes = new Map<string, Mail[]>();
 
     private readonly config: MailServerConfig;
     private readonly port: number;
@@ -30,7 +32,8 @@ export class MailServer {
             // Upon receiving an email gather all email address, push all mail to inbox, and set the object with an address and list of mail
             onData: (stream, session, callback) => {
                 simpleParser(stream)
-                    .then((mail) => {
+                    .then((rawMail) => {
+                        const mail = parseMail(rawMail);
                         const recipients = session.envelope.rcptTo.map(
                             (r) => r.address,
                         );
@@ -103,7 +106,7 @@ export class MailServer {
      *
      * @param address Recipient email address.
      */
-    public getMailbox(address: string): ParsedMail[] {
+    public getMailbox(address: string): Mail[] {
         return this.mailboxes.get(address) ?? [];
     }
 
@@ -114,10 +117,7 @@ export class MailServer {
      * @param address Recipient email address.
      * @param timeout Max wait time in milliseconds.
      */
-    public waitForMail(
-        address: string,
-        timeout = this.timeout,
-    ): Promise<ParsedMail> {
+    public waitForMail(address: string, timeout = this.timeout): Promise<Mail> {
         return this.awaiter.waitForMail(address, timeout);
     }
 
@@ -131,7 +131,7 @@ export class MailServer {
     public waitForVerificationEmail(
         address: string,
         timeout = this.timeout,
-    ): Promise<ParsedMail> {
+    ): Promise<Mail> {
         return this.awaiter.waitForVerificationEmail(address, timeout);
     }
 

@@ -1,7 +1,7 @@
 import { expect, test, beforeEach, beforeAll } from "vitest";
-import type { ParsedMail } from "mailparser";
 
 import { MailServer } from "../../src/mail-server/mail-server.js";
+import type { Mail } from "../../src/types/mail.js";
 
 let mailServer: MailServer;
 
@@ -21,10 +21,14 @@ test("getMailbox returns empty array when no mail exists", () => {
 });
 
 test("clear wipes mail state", () => {
-    mailServer.getMailbox("test").push({
+    const mail: Mail = {
+        from: "sender@example.com",
+        to: "test@example.com",
         subject: "Testing",
         text: "Test text",
-    } as ParsedMail);
+    };
+
+    mailServer.getMailbox("test").push(mail);
 
     mailServer.clear();
     expect(mailServer.getMailbox("test")).toStrictEqual([]);

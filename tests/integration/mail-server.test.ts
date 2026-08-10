@@ -30,6 +30,8 @@ test("mail server can receive incoming mail", async () => {
 
     expect(received.subject).toBe("Verify your account");
     expect(received.text?.toString()).toContain("hello");
+    expect(received.from).toBe("tester@example.com");
+    expect(received.to).toBe(recipient);
     expect(mailServer.getMailbox(recipient)).toHaveLength(1);
 });
 
@@ -41,6 +43,8 @@ test("waitForMail resolves after real mail sent", async () => {
 
     expect(receivedMail.subject).toBe(sentMail.subject);
     expect(receivedMail.text?.toString()).toContain(sentMail.text);
+    expect(receivedMail.from).toBe("tester@example.com");
+    expect(receivedMail.to).toBe(recipient);
 });
 
 test("waitForMail times out when no mail received", async () => {

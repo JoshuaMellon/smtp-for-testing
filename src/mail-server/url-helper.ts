@@ -1,4 +1,4 @@
-import type { ParsedMail } from "mailparser";
+import type { Mail } from "../types/mail.js";
 
 const URL_REGEX = /https?:\/\/[^\s"'<>]+/gi;
 
@@ -14,7 +14,7 @@ const URL_REGEX = /https?:\/\/[^\s"'<>]+/gi;
  * @param delayMs Delay in milliseconds between attempts - default: 5000.
  */
 export async function fetchUrls(
-    getMailList: () => ParsedMail[],
+    getMailList: () => Mail[],
     subject: string,
     retries = 6,
     delayMs = 5000,
@@ -33,9 +33,8 @@ export async function fetchUrls(
         }
 
         const mailContent =
-            targetMail.html?.toString() ??
-            targetMail.textAsHtml ??
-            targetMail.text ??
+            (typeof targetMail.html === "string" ? targetMail.html : "") ||
+            targetMail.text ||
             "";
 
         const urls = Array.from(mailContent.matchAll(URL_REGEX), (m) => m[0]);

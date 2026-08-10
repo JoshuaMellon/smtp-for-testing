@@ -15,11 +15,22 @@ const TestResponseSchema = z.string().openapi({
 
 const MailSchema = z
     .object({
+        from: z.string().optional(),
+        to: z.string().optional(),
         subject: z.string().nullable().optional(),
         text: z.string().nullable().optional(),
-        html: z.string().nullable().optional(),
+        html: z.union([z.string(), z.boolean()]).nullable().optional(),
+        attachments: z
+            .array(
+                z.object({
+                    filename: z.string().optional(),
+                    content: z.union([z.string(), z.instanceof(Buffer)]),
+                    contentType: z.string().optional(),
+                }),
+            )
+            .optional(),
     })
-    .openapi("ParsedMail");
+    .openapi("Mail");
 
 registry.registerPath({
     method: "get",
