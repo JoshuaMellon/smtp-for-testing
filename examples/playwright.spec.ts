@@ -13,7 +13,10 @@ test("captures a verification email", async ({ page, mailServer }) => {
     await page.getByLabel("Email").fill("user@example.com");
     await page.getByRole("button", { name: "Sign up" }).click();
 
-    const mail = await mailServer.waitForVerificationEmail("user@example.com", 3000);
+    const mail = await mailServer.waitForVerificationEmail(
+        "user@example.com",
+        3000,
+    );
 
     expect(mail.subject).toContain("Verify");
     expect(mail.text).toContain("verify");

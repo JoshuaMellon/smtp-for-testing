@@ -34,32 +34,43 @@ function handleMailRouteError(error: unknown, res: Response): void {
 export function createMailRoutes(mailServer: MailServer): Router {
     const router = Router();
 
-    router.get("/mailbox/:address", (req: Request<{ address: string }>, res: Response) => {
-        try {
-            const mail = mailServer.getMailbox(req.params.address);
-            res.status(200).json(mail);
-        } catch (error) {
-            handleMailRouteError(error, res);
-        }
-    });
+    router.get(
+        "/mailbox/:address",
+        (req: Request<{ address: string }>, res: Response) => {
+            try {
+                const mail = mailServer.getMailbox(req.params.address);
+                res.status(200).json(mail);
+            } catch (error) {
+                handleMailRouteError(error, res);
+            }
+        },
+    );
 
-    router.get("/mailbox/:address/wait", async (req: Request<{ address: string }>, res: Response) => {
-        try {
-            const mail = await mailServer.waitForMail(req.params.address);
-            res.status(200).json(mail.text);
-        } catch (error) {
-            handleMailRouteError(error, res);
-        }
-    });
+    router.get(
+        "/mailbox/:address/wait",
+        async (req: Request<{ address: string }>, res: Response) => {
+            try {
+                const mail = await mailServer.waitForMail(req.params.address);
+                res.status(200).json(mail.text);
+            } catch (error) {
+                handleMailRouteError(error, res);
+            }
+        },
+    );
 
-    router.get("/mailbox/:address/wait-verification", async (req: Request<{ address: string }>, res: Response) => {
-        try {
-            const mail = await mailServer.waitForVerificationEmail(req.params.address);
-            res.status(200).json(mail.text);
-        } catch (error) {
-            handleMailRouteError(error, res);
-        }
-    });
+    router.get(
+        "/mailbox/:address/wait-verification",
+        async (req: Request<{ address: string }>, res: Response) => {
+            try {
+                const mail = await mailServer.waitForVerificationEmail(
+                    req.params.address,
+                );
+                res.status(200).json(mail.text);
+            } catch (error) {
+                handleMailRouteError(error, res);
+            }
+        },
+    );
 
     return router;
 }

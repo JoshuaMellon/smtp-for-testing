@@ -46,7 +46,9 @@ test("waitForMail resolves after real mail sent", async () => {
 test("waitForMail times out when no mail received", async () => {
     const recipient = "receiveMail@example.com";
 
-    await expect(mailServer.waitForMail(recipient, 1000)).rejects.toThrow("Timed out waiting for email");
+    await expect(mailServer.waitForMail(recipient, 1000)).rejects.toThrow(
+        "Timed out waiting for email",
+    );
 });
 
 test("clear correctly removes real mail", async () => {
@@ -65,7 +67,9 @@ test("multiple recipients able to receive share mail", async () => {
     const recipients = ["tester1@example.com", "tester2@example.com"];
     const sentMail = await sendTestMail(recipients);
 
-    const received = await Promise.all(recipients.map((recipient) => mailServer.waitForMail(recipient, 3000)));
+    const received = await Promise.all(
+        recipients.map((recipient) => mailServer.waitForMail(recipient, 3000)),
+    );
 
     received.forEach((mail) => {
         expect(mail.subject).toBe(sentMail.subject);
@@ -78,7 +82,9 @@ test("multiple recipients able to receive unique mail", async () => {
 
     await Promise.all(recipients.map((recipient) => sendTestMail(recipient)));
 
-    const received = await Promise.all(recipients.map((recipient) => mailServer.waitForMail(recipient, 3000)));
+    const received = await Promise.all(
+        recipients.map((recipient) => mailServer.waitForMail(recipient, 3000)),
+    );
 
     received.forEach((mail) => {
         expect(mail.subject).toBe("Verify your account");
@@ -90,7 +96,10 @@ test("waitForVerificationEmail resolves after expected mail", async () => {
     const recipient = "receiveMail@example.com";
     const sentMail = await sendTestMail(recipient);
 
-    const receivedMail = await mailServer.waitForVerificationEmail(recipient, 3000);
+    const receivedMail = await mailServer.waitForVerificationEmail(
+        recipient,
+        3000,
+    );
 
     expect(receivedMail.subject).toBe(sentMail.subject);
     expect(receivedMail.text?.toString()).toContain(sentMail.text);
@@ -107,5 +116,7 @@ test("waitForVerificationEmail errors when incorrect mail is received", async ()
 
     await sendTestMail(recipient, sentMail);
 
-    await expect(mailServer.waitForVerificationEmail(recipient, 1000)).rejects.toThrow("Wrong email received");
+    await expect(
+        mailServer.waitForVerificationEmail(recipient, 1000),
+    ).rejects.toThrow("Wrong email received");
 });

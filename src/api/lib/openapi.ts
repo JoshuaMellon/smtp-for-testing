@@ -1,4 +1,8 @@
-import { OpenApiGeneratorV3, OpenAPIRegistry, extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
+import {
+    OpenApiGeneratorV3,
+    OpenAPIRegistry,
+    extendZodWithOpenApi,
+} from "@asteasolutions/zod-to-openapi";
 import { z } from "zod";
 
 extendZodWithOpenApi(z);
@@ -114,7 +118,8 @@ export function generateOpenApiDocument(baseUrl = "http://localhost:3000") {
         info: {
             title: "smtp-for-testing API",
             version: "0.1.0",
-            description: "HTTP endpoints for interacting with the in-memory mail server.",
+            description:
+                "HTTP endpoints for interacting with the in-memory mail server.",
         },
         servers: [{ url: baseUrl }],
         tags: [{ name: "mail" }, { name: "test" }],

@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import request from "supertest";
-import { expect, test, beforeEach, afterEach } from "vitest";
+import { expect, test, beforeEach } from "vitest";
 
 import { createApiApp } from "../../../src/api/index.js";
 

@@ -1,15 +1,16 @@
-Lightweight local SMTP written in Typescript for automated testing, including integrations for various testing frameworks - prominently Playwright.                                                                                                                                                          
+Lightweight local SMTP written in Typescript for automated testing, including integrations for various testing frameworks - prominently Playwright.
 
 It captures incoming email in memory and gives you simple helpers to:
 
-  - wait for a message
-  - read a mailbox by recipient
-  - clear mail state between tests
-  - assert verification email flows
+- wait for a message
+- read a mailbox by recipient
+- clear mail state between tests
+- assert verification email flows
 
 Why this exists
-  - End-to-end tests often need real email behavior without external providers.
-  - smtp-for-testing runs locally, accepts incoming mail, parses it, and stores it per recipient so your tests can assert real delivery behaviour.
+
+- End-to-end tests often need real email behavior without external providers.
+- smtp-for-testing runs locally, accepts incoming mail, parses it, and stores it per recipient so your tests can assert real delivery behaviour.
 
 Tech stack and relevant libraries
 
@@ -18,9 +19,10 @@ mailparser: parses raw message streams into structured mail objects
 nodemailer: useful for sending test messages into the local SMTP server
 
 Install
-```npm install smtp-for-testing```
+`npm install smtp-for-testing`
 
 Quick start
+
 ```
 import { MailServer } from "smtp-for-testing";
 
