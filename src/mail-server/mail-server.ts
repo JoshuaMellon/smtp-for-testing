@@ -1,7 +1,9 @@
 import { SMTPServer } from "smtp-server";
 import { simpleParser } from "mailparser";
-import { MailAwaiter } from "./mail-awaiter.js";
 import { parseMail } from "./mail-parser.js";
+
+import { MailAwaiter } from "./mail-awaiter.js";
+import { UserSeeder } from "./user-seeder.js";
 
 import type { Mail } from "../types/mail.js";
 import type { MailServerConfig } from "../types/mail-server.js";
@@ -15,6 +17,7 @@ export class MailServer {
 
     public server: SMTPServer;
     public awaiter: MailAwaiter;
+    private readonly userSeeder: UserSeeder;
 
     constructor(configOrPort: MailServerConfig | number = 2525) {
         this.config =
@@ -51,6 +54,13 @@ export class MailServer {
         });
 
         this.awaiter = new MailAwaiter(this.getMailbox.bind(this));
+
+        this.userSeeder = new UserSeeder(
+            {
+                ensureMailbox: (address) => this.ensureMailbox(address),
+            },
+            this.config,
+        );
     }
 
     /**
@@ -135,22 +145,27 @@ export class MailServer {
         return this.awaiter.waitForVerificationEmail(address, timeout);
     }
 
-    /** Seeds configured recipient addresses so mailbox entries exist before mail arrives. */
-    private seedMailboxes(): void {
-        const recipients = this.config.seedRecipients ?? [];
-        const domainUsers =
-            this.config.recipientDomain && this.config.seedUsers
-                ? this.config.seedUsers.map(
-                      (u) => `${u}@${this.config.recipientDomain}`,
-                  )
-                : [];
+    /**
+     * Creates a mailbox entry for the provided address if one does not already exist.
+     *
+     * @param address Recipient email address to initialize.
+     */
+    public addMailbox(address: string): void {
+        this.userSeeder.addMailbox(address);
+    }
 
-        const allMailboxes = [...recipients, ...domainUsers];
-
-        for (const address of allMailboxes) {
-            if (!this.mailboxes.has(address)) {
-                this.mailboxes.set(address, []);
-            }
+    /**
+     * Ensures a mailbox exists in the in-memory store for the supplied address.
+     *
+     * @param address Recipient email address to initialize.
+     */
+    private ensureMailbox(address: string): void {
+        if (!this.mailboxes.has(address)) {
+            this.mailboxes.set(address, []);
         }
+    }
+
+    private seedMailboxes(): void {
+        this.userSeeder.seedConfiguredMailboxes();
     }
 }
