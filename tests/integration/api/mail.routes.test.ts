@@ -27,19 +27,19 @@ afterEach(async () => {
     await mailServer.stop();
 });
 
-test("GET /mail/mailbox/:address returns array", async () => {
-    const res = await request(app).get("/mail/mailbox/test@example.com");
+test("GET /mailbox/:address returns array", async () => {
+    const res = await request(app).get("/mailbox/test@example.com");
 
     expect(res.status).toBe(200);
     expect(res.body).toBeInstanceOf(Array);
 });
 
-test("GET /mail/mailbox/:address/wait returns 200 and mail when matching mail found", async () => {
+test("GET /mailbox/:address/wait returns 200 and mail when matching mail found", async () => {
     const recipient = "receiveMail@example.com";
 
     await sendTestMail(recipient, undefined, smtpPort);
 
-    const res = await request(app).get(`/mail/mailbox/${recipient}/wait`);
+    const res = await request(app).get(`/mailbox/${recipient}/wait`);
 
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({
@@ -49,20 +49,20 @@ test("GET /mail/mailbox/:address/wait returns 200 and mail when matching mail fo
     });
 });
 
-test("GET /mail/mailbox/:address/wait returns 400 when no matching mail found", async () => {
-    const res = await request(app).get("/mail/mailbox/test@example.com/wait");
+test("GET /mailbox/:address/wait returns 400 when no matching mail found", async () => {
+    const res = await request(app).get("/mailbox/test@example.com/wait");
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error", "Timed out waiting for email");
 });
 
-test("GET /mail/mailbox/:address/wait-verification returns 200 and mail when matching mail found", async () => {
+test("GET /mailbox/:address/wait-verification returns 200 and mail when matching mail found", async () => {
     const recipient = "test@example.com";
 
     await sendTestMail(recipient, undefined, smtpPort);
 
     const res = await request(app).get(
-        `/mail/mailbox/${recipient}/wait-verification`,
+        `/mailbox/${recipient}/wait-verification`,
     );
 
     expect(res.status).toBe(200);
@@ -73,16 +73,16 @@ test("GET /mail/mailbox/:address/wait-verification returns 200 and mail when mat
     });
 });
 
-test("GET /mail/mailbox/:address/wait-verification returns 400 when no matching mail found", async () => {
+test("GET /mailbox/:address/wait-verification returns 400 when no matching mail found", async () => {
     const res = await request(app).get(
-        "/mail/mailbox/test@example.com/wait-verification",
+        "/mailbox/test@example.com/wait-verification",
     );
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error", "Timed out waiting for email");
 });
 
-test("GET /mail/mailbox/:address returns 500 when getMailbox throws", async () => {
+test("GET /mailbox/:address returns 500 when getMailbox throws", async () => {
     const app = express();
     const mockServer = {
         getMailbox: () => {
@@ -92,15 +92,15 @@ test("GET /mail/mailbox/:address returns 500 when getMailbox throws", async () =
         waitForVerificationEmail: async () => "",
     } as unknown as MailServer;
 
-    app.use("/mail", createMailRoutes(mockServer));
+    app.use("/mailbox", createMailRoutes(mockServer));
 
-    const res = await request(app).get("/mail/mailbox/test@example.com");
+    const res = await request(app).get("/mailbox/test@example.com");
 
     expect(res.status).toBe(500);
     expect(res.body).toHaveProperty("error", "boom");
 });
 
-test("GET /mail/mailbox/:address/wait returns 500 unknown error for non-Error rejection", async () => {
+test("GET /mailbox/:address/wait returns 500 unknown error for non-Error rejection", async () => {
     const app = express();
     const mockServer = {
         getMailbox: () => [],
@@ -110,15 +110,15 @@ test("GET /mail/mailbox/:address/wait returns 500 unknown error for non-Error re
         waitForVerificationEmail: async () => "",
     } as unknown as MailServer;
 
-    app.use("/mail", createMailRoutes(mockServer));
+    app.use("/mailbox", createMailRoutes(mockServer));
 
-    const res = await request(app).get("/mail/mailbox/test@example.com/wait");
+    const res = await request(app).get("/mailbox/test@example.com/wait");
 
     expect(res.status).toBe(500);
     expect(res.body).toHaveProperty("error", "Unknown server error");
 });
 
-test("GET /mail/mailbox/:address/wait-verification returns 400 for wrong email type", async () => {
+test("GET /mailbox/:address/wait-verification returns 400 for wrong email type", async () => {
     const app = express();
     const mockServer = {
         getMailbox: () => [],
@@ -128,10 +128,10 @@ test("GET /mail/mailbox/:address/wait-verification returns 400 for wrong email t
         },
     } as unknown as MailServer;
 
-    app.use("/mail", createMailRoutes(mockServer));
+    app.use("/mailbox", createMailRoutes(mockServer));
 
     const res = await request(app).get(
-        "/mail/mailbox/test@example.com/wait-verification",
+        "/mailbox/test@example.com/wait-verification",
     );
 
     expect(res.status).toBe(400);
