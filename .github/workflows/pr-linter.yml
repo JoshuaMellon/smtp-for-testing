@@ -30,5 +30,7 @@ jobs:
               run: npm run format:check
             - name: Run typecheck
               run: npm run typecheck
+              if: always()
             - name: Run tests
               run: npm run test:run
+              if: always()
