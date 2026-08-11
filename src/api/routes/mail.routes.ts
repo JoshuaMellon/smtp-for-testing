@@ -35,7 +35,7 @@ export function createMailRoutes(mailServer: MailServer): Router {
     const router = Router();
 
     router.get(
-        "/mailbox/:address",
+        "/:address",
         (req: Request<{ address: string }>, res: Response) => {
             try {
                 const mail = mailServer.getMailbox(req.params.address);
@@ -47,7 +47,7 @@ export function createMailRoutes(mailServer: MailServer): Router {
     );
 
     router.get(
-        "/mailbox/:address/wait",
+        "/:address/wait",
         async (req: Request<{ address: string }>, res: Response) => {
             try {
                 const mail = await mailServer.waitForMail(req.params.address);
@@ -59,7 +59,7 @@ export function createMailRoutes(mailServer: MailServer): Router {
     );
 
     router.get(
-        "/mailbox/:address/wait-verification",
+        "/:address/wait-verification",
         async (req: Request<{ address: string }>, res: Response) => {
             try {
                 const mail = await mailServer.waitForVerificationEmail(
