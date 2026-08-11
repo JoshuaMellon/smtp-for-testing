@@ -1,5 +1,5 @@
 interface MailboxStore {
-    ensureMailbox(address: string): void;
+    addMailbox(address: string): void;
 }
 export class UserSeeder {
     constructor(
@@ -23,8 +23,10 @@ export class UserSeeder {
                   )
                 : [];
 
-        for (const address of [...recipients, ...domainUsers]) {
-            this.mailboxStore.ensureMailbox(address);
+        const uniqueAddresses = new Set([...recipients, ...domainUsers]);
+
+        for (const address of uniqueAddresses) {
+            this.mailboxStore.addMailbox(address);
         }
     }
 
@@ -34,6 +36,6 @@ export class UserSeeder {
      * @param address Recipient email address to initialize.
      */
     addMailbox(address: string): void {
-        this.mailboxStore.ensureMailbox(address);
+        this.mailboxStore.addMailbox(address);
     }
 }

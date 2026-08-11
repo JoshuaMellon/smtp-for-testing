@@ -15,8 +15,6 @@ beforeEach(async () => {
 
 test("getMailbox returns empty array when no mail exists", () => {
     const mailbox = mailServer.getMailbox("test");
-    console.log(mailbox);
-
     expect(mailbox).toStrictEqual([]);
 });
 

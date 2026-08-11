@@ -57,6 +57,8 @@
     "dependencies": {
         "@asteasolutions/zod-to-openapi": "^9.1.0",
         "@scalar/express-api-reference": "^0.10.13",
+        "@types/better-sqlite3": "^9.6.0",
+        "better-sqlite3": "^13.0.3",
         "express": "^5.2.1",
         "mailparser": "^3.9.14",
         "smtp-server": "^3.19.2"
@@ -71,13 +73,13 @@
         "@vitest/coverage-v8": "^4.1.10",
         "eslint": "^10.8.1",
         "eslint-config-prettier": "^10.1.8",
+        "playwright": "^1.62.1",
         "prettier": "^3.9.6",
         "rimraf": "^6.0.1",
         "supertest": "^7.2.2",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.67.0",
-        "vitest": "^4.1.10",
-        "playwright": "^1.62.1"
+        "vitest": "^4.1.10"
     },
     "peerDependencies": {
         "playwright": ">=1.0.0"

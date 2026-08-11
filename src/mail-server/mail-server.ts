@@ -4,12 +4,20 @@ import { parseMail } from "./mail-parser.js";
 
 import { MailAwaiter } from "./mail-awaiter.js";
 import { UserSeeder } from "./user-seeder.js";
+import {
+    createDatabase,
+    getFirstMailboxMail,
+    getMailboxMail,
+    insertMail,
+    seedDatabase,
+    clearDatabase,
+} from "../db/db.js";
 
 import type { Mail } from "../types/mail.js";
 import type { MailServerConfig } from "../types/mail-server.js";
 
 export class MailServer {
-    private mailboxes = new Map<string, Mail[]>();
+    private readonly db = createDatabase();
 
     private readonly config: MailServerConfig;
     private readonly port: number;
@@ -44,9 +52,7 @@ export class MailServer {
                         );
 
                         for (const address of recipients) {
-                            const existing = this.mailboxes.get(address) ?? [];
-                            existing.push(mail);
-                            this.mailboxes.set(address, existing);
+                            insertMail(this.db, address, mail);
                         }
 
                         callback();
@@ -55,11 +61,11 @@ export class MailServer {
             },
         });
 
-        this.awaiter = new MailAwaiter(this.getMailbox.bind(this));
+        this.awaiter = new MailAwaiter(this.getFirstMailbox.bind(this));
 
         this.userSeeder = new UserSeeder(
             {
-                ensureMailbox: (address) => this.ensureMailbox(address),
+                addMailbox: (address) => this.ensureMailbox(address),
             },
             this.config,
         );
@@ -110,7 +116,7 @@ export class MailServer {
 
     /** Clears all in-memory mailbox state for this server instance. */
     public clear(): void {
-        this.mailboxes.clear();
+        clearDatabase(this.db);
     }
 
     /**
@@ -119,7 +125,7 @@ export class MailServer {
      * @param address Recipient email address.
      */
     public getMailbox(address: string): Mail[] {
-        return this.mailboxes.get(address) ?? [];
+        return getMailboxMail(this.db, address);
     }
 
     /**
@@ -162,9 +168,11 @@ export class MailServer {
      * @param address Recipient email address to initialize.
      */
     private ensureMailbox(address: string): void {
-        if (!this.mailboxes.has(address)) {
-            this.mailboxes.set(address, []);
-        }
+        seedDatabase(this.db, [address]);
+    }
+
+    private getFirstMailbox(address: string): Mail | undefined {
+        return getFirstMailboxMail(this.db, address);
     }
 
     private seedMailboxes(): void {
