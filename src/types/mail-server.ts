@@ -1,7 +1,7 @@
 export type MailServerConfig = {
     /** Port for the local SMTP server. Defaults to 2525. */
     port?: number;
-    /** Optional host/interface to bind the SMTP server to. */
+    /** Optional host/interface to bind the SMTP server to. Only use when wanting  to access publically*/
     host?: string;
     /** Default timeout (ms) used by wait helpers when not explicitly provided. */
     defaultTimeout?: number;
