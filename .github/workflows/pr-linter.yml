@@ -28,10 +28,9 @@ jobs:
               run: npm run lint
             - name: Run Prettier
               run: npm run format:check
-            - name: Fix Prettier errors
-              run: npm run format
-              if: failure()
             - name: Run typecheck
               run: npm run typecheck
+              if: always()
             - name: Run tests
               run: npm run test:run
+              if: always()
