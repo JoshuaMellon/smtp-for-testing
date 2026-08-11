@@ -27,7 +27,7 @@ export class MailServer {
                 : configOrPort;
 
         this.port = this.config.port ?? 2525;
-        this.host = this.config.host ?? "0.0.0.1";
+        this.host = this.config.host ?? "127.0.0.1";
         this.timeout = this.config.defaultTimeout ?? 10000;
 
         this.server = new SMTPServer({
