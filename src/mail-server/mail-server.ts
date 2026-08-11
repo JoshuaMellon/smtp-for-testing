@@ -13,6 +13,7 @@ export class MailServer {
 
     private readonly config: MailServerConfig;
     private readonly port: number;
+    private readonly host: string;
     private readonly timeout: number;
 
     public server: SMTPServer;
@@ -26,6 +27,7 @@ export class MailServer {
                 : configOrPort;
 
         this.port = this.config.port ?? 2525;
+        this.host = this.config.host ?? "127.0.0.1";
         this.timeout = this.config.defaultTimeout ?? 10000;
 
         this.server = new SMTPServer({
@@ -80,7 +82,7 @@ export class MailServer {
 
             this.server.once("error", reject);
 
-            this.server.listen(this.port, this.config.host, () => {
+            this.server.listen(this.port, this.host, () => {
                 this.server.removeListener("error", reject);
                 console.log(`Server started on port: ${this.port}`);
                 resolve();
