@@ -10,8 +10,20 @@ extendZodWithOpenApi(z);
 const registry = new OpenAPIRegistry();
 
 const TestResponseSchema = z.string().openapi({
-    example: "Api running on port 3000",
+    example: "API up!",
 });
+
+const ErrorResponseSchema = z
+    .object({
+        error: z.string(),
+    })
+    .openapi({ title: "ErrorResponse" });
+
+const SeedMailboxResponseSchema = z
+    .object({
+        message: z.string(),
+    })
+    .openapi({ title: "SeedMailboxResponse" });
 
 const MailSchema = z
     .object({
@@ -34,7 +46,7 @@ const MailSchema = z
 
 registry.registerPath({
     method: "get",
-    path: "/mail/mailbox/{address}",
+    path: "/mailbox/{address}",
     tags: ["mail"],
     summary: "Get all messages in a mailbox",
     request: {
@@ -58,7 +70,7 @@ registry.registerPath({
 
 registry.registerPath({
     method: "get",
-    path: "/mail/mailbox/{address}/wait",
+    path: "/mailbox/{address}/wait",
     tags: ["mail"],
     summary: "Wait for the first available email",
     request: {
@@ -82,7 +94,7 @@ registry.registerPath({
 
 registry.registerPath({
     method: "get",
-    path: "/mail/mailbox/{address}/wait-verification",
+    path: "/mailbox/{address}/wait-verification",
     tags: ["mail"],
     summary: "Wait for a verification email",
     request: {
@@ -105,8 +117,40 @@ registry.registerPath({
 });
 
 registry.registerPath({
+    method: "post",
+    path: "/user/seed-mailbox/{address}",
+    tags: ["user"],
+    summary: "Create a mailbox for a recipient address",
+    request: {
+        params: z.object({
+            address: z.string().openapi({
+                example: "user@example.com",
+            }),
+        }),
+    },
+    responses: {
+        200: {
+            description: "Mailbox seeded successfully",
+            content: {
+                "application/json": {
+                    schema: SeedMailboxResponseSchema,
+                },
+            },
+        },
+        500: {
+            description: "Failed to seed mailbox",
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+        },
+    },
+});
+
+registry.registerPath({
     method: "get",
-    path: "/test/test",
+    path: "/test/",
     tags: ["test"],
     summary: "API test endpoint",
     responses: {
@@ -133,7 +177,7 @@ export function generateOpenApiDocument(baseUrl = "http://localhost:3000") {
                 "HTTP endpoints for interacting with the in-memory mail server.",
         },
         servers: [{ url: baseUrl }],
-        tags: [{ name: "mail" }, { name: "test" }],
+        tags: [{ name: "mail" }, { name: "test" }, { name: "user" }],
     });
 }
 

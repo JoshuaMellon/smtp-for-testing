@@ -8,6 +8,7 @@ import { openApiDocument } from "./lib/openapi.js";
 
 import { createMailRoutes } from "./routes/mail.routes.js";
 import { createTestRoutes } from "./routes/test.routes.js";
+import { createUserRoutes } from "./routes/user.route.js";
 
 /**
  * Context object containing the Express app instance and mail server
@@ -31,8 +32,9 @@ export function createApiAppWithMailServer(mailServer: MailServer): Express {
 
     app.use(express.json());
 
-    app.use("/mail", createMailRoutes(mailServer));
+    app.use("/mailbox", createMailRoutes(mailServer));
     app.use("/test", createTestRoutes());
+    app.use("/user", createUserRoutes(mailServer));
 
     app.use(
         "/docs",
