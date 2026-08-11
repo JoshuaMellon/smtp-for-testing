@@ -1,18 +1,18 @@
 import type { Mail } from "../types/mail.js";
 
-type GetMailbox = (address: string) => Mail[];
+type GetFirstMailboxMail = (address: string) => Mail | undefined;
 
 export class MailAwaiter {
-    constructor(private readonly getMailbox: GetMailbox) {}
+    constructor(private readonly getFirstMailboxMail: GetFirstMailboxMail) {}
 
     async waitForMail(address: string, timeout = 10000): Promise<Mail> {
         const start = Date.now();
 
         while (Date.now() - start < timeout) {
-            const mailbox = this.getMailbox(address);
+            const mail = this.getFirstMailboxMail(address);
 
-            if (mailbox[0]) {
-                return mailbox[0];
+            if (mail) {
+                return mail;
             }
 
             await new Promise((r) => setTimeout(r, 250));
